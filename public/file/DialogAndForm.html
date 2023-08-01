@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+    <div id="app">
+    </div>
+    <script type="text/x-template" id="app-template">
+        <v-app>
+          <v-container>
+            <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                        弹出二级编辑页面
+                    </v-btn>
+                </template>
+                <v-card elevation="20" class="rounded-xl">
+                    <v-card-title>新建工作记录</v-card-title>
+                    <v-window v-model="step">
+                        <v-window-item :value="1">
+                          <v-card-text>
+                            <v-text-field
+                              label="记录主题"
+                              value="半导体行业路演路演"
+                            ></v-text-field>
+                            <v-select
+                                :items="Typeitems"
+                                label="选择记录类型"
+                                id="typeItem"
+                                ></v-select>
+                          </v-card-text>
+                        </v-window-item>
+                  
+                        <v-window-item :value="2">
+                          <v-card-text>
+                            <span>选择时间范围</span>
+                            <v-date-picker
+                                v-model="dates"
+                                range
+                                full-width
+                                elevation="8"
+                            ></v-date-picker>
+                          </v-card-text>
+                        </v-window-item>
+                  
+                        <v-window-item :value="3">
+                            <v-card-text>
+                                <span>上次选择:</span><a>广东——深圳</a>
+                                <v-select
+                                :items="provinceItems"
+                                label="省份"
+                                ></v-select>
+                                <v-select
+                                :items="cityItems"
+                                label="城市"
+                                ></v-select>
+
+                            </v-card-text>
+                        </v-window-item>
+                        <v-window-item :value="4">
+                            <v-card-text>
+                                <span>上次选择:</span><a>招商银行</a>
+                                <v-switch
+                                v-model="switchs"
+                                :label="switchs ? '上市公司' : '非上市公司'"
+                              ></v-switch>
+
+                                <v-select
+                                :items="customerItems"
+                                label="选择客户"
+                                ></v-select>
+                                <v-textarea
+          solo
+          label="参加的客户人员"
+        ></v-textarea>
+                            </v-card-text>
+                        </v-window-item>
+                        <v-window-item :value="5">
+                            <v-card-text>
+                                <v-textarea
+          solo
+          label="备注"
+        ></v-textarea>
+                            </v-card-text>
+                        </v-window-item>
+                      </v-window>
+                      <v-card-actions>
+                        <v-btn
+                          text
+                          @click="lastWin"
+                        >
+                          {{step === 1 ? '取消' : '回退'}}
+                        </v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="primary"
+                          depressed
+                          @click="nextWin"
+                        >
+                        <!-- :disabled="step === 3" -->
+                          {{step === 5 ? '完成' : '下一项'}}
+                        </v-btn>
+                      </v-card-actions>
+                </v-card>
+            </v-dialog>
+          </v-container>
+        </v-app>
+      </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script>
+        const App = {
+            template: '#app-template',
+            data: () => ({
+                dialog: false,
+                notifications: false,
+                sound: true,
+                widgets: false,
+                step: 1,
+                Typeitems: [
+                    '调研一对一',
+                    '调研一对少',
+                    '调研一对多',
+                    '独立调研',
+                    '电话',
+                    '课题',
+                    '专家服务',
+                    '日常沟通',
+                    '其他',
+                    '个人备忘录',
+                    '路演-分析师',
+                    '路演-专家及上市公司',
+                ],
+                dates: [],
+                provinceItems: [
+                    '广东',
+                    '上海',
+                    '北京'
+                ],
+                cityItems: [
+                    '上海',
+                    '深圳',
+                    '广州',
+                ],
+                switchs: true,
+                customerItems: [
+                    '招商银行',
+                    '露露',
+                    '拉拉',
+                    '波波',
+                    '丽丽'
+                ]
+            }),
+            computed: {
+                currentTitle() {
+                    switch (this.step) {
+                        case 1: return 'Sign-up'
+                        case 2: return 'Create a password'
+                        default: return 'Account created'
+                    }
+                },
+            },
+            watch: {
+                step(value) {
+                    if (value === 2) {
+                        // document.getElementById('typeItem').foucs();
+                    }
+                }
+            },
+            methods: {
+                lastWin() {
+                    if (this.step === 1) {
+                        this.dialog = false;
+                    } else {
+                        this.step--;
+                    }
+                },
+                nextWin() {
+                    if (this.step >= 5) {
+                        this.dialog = false;
+                        this.step = 1;
+                    } else {
+                        this.step++;
+                    }
+                }
+            }
+        }
+
+
+        new Vue({
+            vuetify: new Vuetify(),
+            render: h => h(App)
+        }).$mount('#app')
+
+    </script>
+</body>
+<style>
+    .v-dialog--fullscreen {
+        border-radius: 0;
+        margin: 0;
+        height: 100%;
+        position: fixed;
+        overflow-y: auto;
+        top: 40px;
+        left: 0;
+    }
+</style>
+
+</html>
